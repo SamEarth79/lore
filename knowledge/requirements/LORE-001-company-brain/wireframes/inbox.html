@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wireframe: inbox</title>
+<style>
+  body { font-family: system-ui, sans-serif; background:#f4f4f4; color:#222; margin:0; padding:16px; }
+  h1 { font-size:18px; } h2 { font-size:14px; text-transform:uppercase; letter-spacing:.05em; color:#666; margin:28px 0 8px; }
+  .state { background:#fff; border:1px dashed #999; padding:12px; margin-bottom:12px; }
+  .box { border:1px solid #888; padding:8px; margin:6px 0; background:#fafafa; }
+  .row { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+  .grow { flex:1; }
+  button { border:1px solid #555; background:#e8e8e8; padding:4px 10px; font:inherit; border-radius:3px; }
+  .primary { background:#444; color:#fff; }
+  .badge { display:inline-block; border:1px solid #333; border-radius:3px; padding:0 5px; font-size:12px; background:#ddd; }
+  .note { font-size:12px; color:#777; font-style:italic; }
+  .muted { color:#777; }
+  .dev { border-style:dashed; font-size:12px; }
+  .tabs span { border:1px solid #888; padding:3px 10px; } .tabs .on { background:#444; color:#fff; }
+  input, textarea { font:inherit; width:100%; box-sizing:border-box; }
+  s { color:#777; }
+  .skeleton { height:56px; background:#e6e6e6; margin:6px 0; }
+</style>
+</head>
+<body>
+<h1>Wireframe — inbox (per persona)</h1>
+<p class="note">Inside app-shell. Heading names the current persona. Questions first, then notices. "Done" tab holds resolved/read items.</p>
+
+<h2>State: populated</h2>
+<div class="state">
+  <h3 data-wf="inbox.heading">Dana Lee's inbox</h3>
+  <div class="row tabs" data-wf="inbox.tabs"><span class="on" data-wf="inbox.tab-open">Open (2)</span><span data-wf="inbox.tab-done">Done (4)</span></div>
+
+  <div class="box" data-wf="inbox.question">
+    <div class="row"><strong class="grow">Lore needs your help</strong><span class="muted">2 min ago</span></div>
+    <div class="box" data-wf="inbox.question-fact">"payments-api rate limit is 100 rps" <span class="badge">⚠ Suspect</span> · limits/config · payments-api</div>
+    <div data-wf="inbox.question-why-suspect">Why it's suspect: <em>"VendorY raised our limit to 500 rps"</em> (#payments chat, Marco Ruiz, 15 Oct) changed limits/config on payments-api after this was last confirmed (9 Oct).</div>
+    <div data-wf="inbox.question-why-you">Why you: you wrote the message that set this fact.</div>
+    <div class="muted" data-wf="inbox.question-escalation">You're knower 1 of 3.</div>
+    <div class="row">
+      <button class="primary" data-wf="inbox.confirm">Confirm</button>
+      <button data-wf="inbox.correct">Correct</button>
+      <button data-wf="inbox.not-me">Not me</button>
+      <button class="dev" data-wf="inbox.simulate-timeout">Simulate no reply</button>
+    </div>
+  </div>
+
+  <div class="box" data-wf="inbox.question">
+    <div class="row"><strong class="grow">Lore needs your help</strong><span class="muted">5 min ago</span></div>
+    <div class="box" data-wf="inbox.question-fact">"Platform team owns auth-v1" <span class="badge">⚠ Suspect</span> · ownership · auth-v1</div>
+    <div data-wf="inbox.question-why-suspect">Why it's suspect: structural change — "auth-v1 deprecated" (TICKET-412, 12 Oct).</div>
+    <div data-wf="inbox.question-why-you">Why you: you lead the Platform team, which owns auth-v1.</div>
+    <div class="muted" data-wf="inbox.question-escalation">Asked Sam Okafor first; they said "Not me". You're knower 2 of 3.</div>
+    <div class="row"><button class="primary" data-wf="inbox.confirm">Confirm</button><button data-wf="inbox.correct">Correct</button><button data-wf="inbox.not-me">Not me</button><button class="dev" data-wf="inbox.simulate-timeout">Simulate no reply</button></div>
+  </div>
+
+  <div class="box" data-wf="inbox.question">
+    <div class="row"><strong class="grow">Lore needs your help</strong><span class="muted">1 min ago</span></div>
+    <div class="box" data-wf="inbox.question-fact">"query-planner owned by core team" <span class="badge">⚠ Suspect</span> · ownership · FalkorDB query planner</div>
+    <div data-wf="inbox.question-real-knower">Suggested knower: <strong>@realhandle</strong> (not contacted) — you're answering as the simulated Repo Steward.</div>
+    <div class="row"><button class="primary" data-wf="inbox.confirm">Confirm</button><button data-wf="inbox.correct">Correct</button><button data-wf="inbox.not-me">Not me</button></div>
+  </div>
+
+  <div class="box" data-wf="inbox.notice">
+    <div class="row"><strong class="grow" data-wf="inbox.notice-title">payments-api changed</strong><span class="badge">unread</span></div>
+    <div><s>"payments-api rate limit is 100 rps"</s> <span class="badge">Superseded</span></div>
+    <div>"payments-api rate limit is 500 rps" <span class="badge">✓ Trusted</span> · Corrected by Dana Lee · 15 Oct · <a data-wf="inbox.notice-source">source</a></div>
+    <div data-wf="inbox.notice-why">You're seeing this because <strong>checkout-web</strong> (which you work on) depends on payments-api.</div>
+    <div class="row"><button data-wf="inbox.notice-mark-read">Mark read</button><button data-wf="inbox.notice-open-ask">Open in Ask</button></div>
+  </div>
+</div>
+
+<h2>State: Correct expanded</h2>
+<div class="state">
+  <div class="box" data-wf="inbox.correct-form">
+    <label for="v">What's true now? <span class="muted">(rate limit)</span></label>
+    <input id="v" data-wf="inbox.correct-value" value="100 rps">
+    <div class="muted" data-wf="inbox.correct-value-count">7/300</div>
+    <label for="n">Note (optional)</label>
+    <textarea id="n" rows="2" data-wf="inbox.correct-note"></textarea>
+    <div class="muted" data-wf="inbox.correct-note-count">0/1000</div>
+    <div class="row"><button class="primary" data-wf="inbox.correct-submit">Submit correction</button><button data-wf="inbox.correct-cancel">Cancel</button></div>
+  </div>
+</div>
+
+<h2>State: receipts (after an action)</h2>
+<div class="state" role="status">
+  <div class="box" data-wf="inbox.receipt-confirmed">Confirmed. Fact re-stamped as of 15 Oct 14:05.</div>
+  <div class="box" data-wf="inbox.receipt-corrected">Correction saved. Old fact replaced. Notified 2 people: <a>Marco Ruiz</a>, <a>Priya Shah</a>. <a data-wf="inbox.receipt-view-graph">View on graph</a></div>
+  <div class="box" data-wf="inbox.receipt-corrected-none">Correction saved. Old fact replaced. No one depends on this fact.</div>
+  <div class="box" data-wf="inbox.receipt-passed">Passed to Sam Okafor. <a data-wf="inbox.receipt-view-as">View as Sam Okafor</a></div>
+  <div class="box" data-wf="inbox.receipt-nobody">No one else to ask. Marked as "Nobody knows".</div>
+  <p class="note">Focus moves to the receipt, then the next item. Corrections on real-repo entities read "Simulated correction (sandbox)".</p>
+</div>
+
+<h2>State: already resolved</h2>
+<div class="state">
+  <div class="box" data-wf="inbox.stale-item">This question was already resolved / passed to Sam Okafor. <span class="muted">(actions disabled)</span></div>
+</div>
+
+<h2>State: empty</h2>
+<div class="state">
+  <div class="box" data-wf="inbox.empty">
+    <p>Nothing needs you, Marco. Lore will ask you when a fact you know about goes stale.</p>
+    <p data-wf="inbox.empty-hint">People with open items: <a>Dana Lee (2)</a>, <a>Priya Shah (1)</a></p>
+  </div>
+</div>
+
+<h2>State: loading</h2>
+<div class="state" data-wf="inbox.loading"><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div></div>
+
+<h2>State: submit error</h2>
+<div class="state">
+  <div class="box row" role="alert" data-wf="inbox.error"><span class="grow">Couldn't save your answer.</span><button data-wf="inbox.error-retry">Retry</button></div>
+  <p class="note">Typed correction is kept.</p>
+</div>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wireframe: freshness</title>
+<style>
+  body { font-family: system-ui, sans-serif; background:#f4f4f4; color:#222; margin:0; padding:16px; }
+  h1 { font-size:18px; } h2 { font-size:14px; text-transform:uppercase; letter-spacing:.05em; color:#666; margin:28px 0 8px; }
+  .state { background:#fff; border:1px dashed #999; padding:12px; margin-bottom:12px; }
+  .box { border:1px solid #888; padding:8px; margin:6px 0; background:#fafafa; }
+  .row { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+  .cols { display:flex; gap:12px; flex-wrap:wrap; } .cols > div { flex:1 1 300px; }
+  .grow { flex:1; }
+  button { border:1px solid #555; background:#e8e8e8; padding:4px 10px; font:inherit; border-radius:3px; }
+  .badge { display:inline-block; border:1px solid #333; border-radius:3px; padding:0 5px; font-size:12px; background:#ddd; }
+  .chip { border:1px solid #888; border-radius:10px; padding:0 6px; font-size:12px; }
+  .note { font-size:12px; color:#777; font-style:italic; }
+  .muted { color:#777; }
+  .pin { border:2px solid #333; }
+  .flash { outline:3px dashed #333; }
+  code { font-size:12px; }
+  .skeleton { height:60px; background:#e6e6e6; margin:6px 0; }
+</style>
+</head>
+<body>
+<h1>Wireframe — freshness (trusted vs suspect, with reasons)</h1>
+<p class="note">Inside app-shell. Pinned contrast pair on top, two columns, "Recently healed" strip at the bottom.</p>
+
+<h2>State: populated</h2>
+<div class="state">
+  <h3 data-wf="freshness.heading">Freshness</h3>
+  <p class="muted" data-wf="freshness.explainer">Facts go suspect when what they describe changes after they were last confirmed — not when they get old.</p>
+
+  <div class="box pin" data-wf="freshness.contrast">
+    <strong>Same age, different fate</strong>
+    <div class="cols">
+      <div class="box" data-wf="freshness.contrast-frozen">"ledger-batch runs nightly at 02:00" <span class="badge">✓ Trusted</span><br>
+        <span class="muted">Doc from 14 months ago · Last change to ledger-batch: 14 months ago (frozen system)</span></div>
+      <div class="box" data-wf="freshness.contrast-churning">"payments-api rate limit is 100 rps" <span class="badge">⚠ Suspect</span><br>
+        <span class="muted">Chat from 6 days ago · payments-api changed 1 day ago: "VendorY raised our limit to 500 rps"</span></div>
+    </div>
+  </div>
+
+  <div class="row" data-wf="freshness.filters">
+    <span>Filter:</span>
+    <select data-wf="freshness.filter-aspect"><option>All aspects</option><option>ownership</option><option>dependency</option><option>limits/config</option><option>api-contract</option><option>status</option><option>process</option></select>
+    <select data-wf="freshness.filter-state"><option>All states</option><option>Suspect</option><option>Asking…</option><option>Unverified</option><option>Nobody knows</option></select>
+    <label><input type="checkbox" data-wf="freshness.filter-real"> Real repo only</label>
+  </div>
+
+  <div class="cols">
+    <div data-wf="freshness.col-trusted">
+      <strong>Trusted (42)</strong>
+      <div class="box" data-wf="freshness.fact-card">"Payments team owns payments-api" <span class="badge">✓ Trusted</span><br>
+        <span class="chip">payments-api</span> <span class="chip">ownership</span> <span class="muted">Confirmed 3 Oct</span></div>
+      <div class="box" data-wf="freshness.fact-card">"query engine depends on GraphBLAS" <span class="badge">✓ Trusted</span> <span class="chip">real repo</span><br>
+        <span class="chip">FalkorDB core</span> <span class="chip">dependency</span> <span class="muted">From PR #812 · 2 Sep</span></div>
+    </div>
+    <div data-wf="freshness.col-suspect">
+      <strong>Suspect (9)</strong>
+      <div class="box flash" data-wf="freshness.fact-card">"payments-api rate limit is 100 rps" <span class="badge">💬 Asking Dana Lee</span><br>
+        <span class="chip">payments-api</span> <span class="chip">limits/config</span>
+        <details data-wf="freshness.reason" open><summary>Why</summary>
+          <code data-wf="freshness.reason-path">Fact —about→ payments-api ←touches— "VendorY raised our limit to 500 rps" (#payments chat, 15 Oct) — after last confirmation (9 Oct)</code>
+        </details>
+        <div class="row"><a data-wf="freshness.open-source">Open source</a><a data-wf="freshness.open-ask">Open in Ask</a><a data-wf="freshness.open-inbox">View Dana Lee's inbox</a></div>
+      </div>
+      <div class="box" data-wf="freshness.fact-card">"Platform team owns auth-v1" <span class="badge">⚠ Suspect</span><br><span class="chip">auth-v1</span> <span class="chip">ownership</span>
+        <details data-wf="freshness.reason"><summary>Why</summary><code>structural: "auth-v1 deprecated" (TICKET-412, 12 Oct)</code></details></div>
+      <div class="box" data-wf="freshness.fact-card">"Atlas launch date is 1 Nov" <span class="badge">❓ Nobody knows</span><br><span class="muted">Sam Okafor, Dana Lee and Marco Ruiz all said "Not me". Still suspect.</span></div>
+      <div class="box" data-wf="freshness.fact-card">"checkout-web uses auth-v2" <span class="badge">◌ Unverified</span><br><span class="muted">Low-confidence extraction (54%). Queued for confirmation.</span></div>
+    </div>
+  </div>
+
+  <div data-wf="freshness.healed">
+    <strong>Recently healed (2)</strong>
+    <div class="box" data-wf="freshness.healed-item"><s>"payments-api owner is Payments team"</s> → "payments-api owner is Platform team" · Corrected by Dana Lee · 15 Oct</div>
+  </div>
+</div>
+
+<h2>State: just flagged (after an ingest/correction)</h2>
+<div class="state">
+  <div class="box" role="status" data-wf="freshness.toast-flagged">2 facts just became suspect.</div>
+  <p class="note">Newly changed cards get a brief highlight ("flipped 30s ago"); respects prefers-reduced-motion.</p>
+</div>
+
+<h2>State: empty columns</h2>
+<div class="state">
+  <div class="box" data-wf="freshness.empty-suspect">Nothing is stale. Every fact matches the latest events.</div>
+  <div class="box" data-wf="freshness.empty-trusted">No trusted facts yet.</div>
+  <div class="box" data-wf="freshness.empty-filtered">No facts match these filters. <button data-wf="freshness.clear-filters">Clear filters</button></div>
+</div>
+
+<h2>State: loading</h2>
+<div class="state" data-wf="freshness.loading"><div class="cols"><div><div class="skeleton"></div><div class="skeleton"></div></div><div><div class="skeleton"></div><div class="skeleton"></div></div></div></div>
+
+<h2>State: error</h2>
+<div class="state"><div class="box row" role="alert" data-wf="freshness.error"><span class="grow">Couldn't load facts.</span><button data-wf="freshness.error-retry">Retry</button></div></div>
+
+<h2>State: extremes</h2>
+<div class="state"><p class="note">Statements clamp to 3 lines. Columns paginate at 50 ("Show more").</p></div>
+</body>
+</html>

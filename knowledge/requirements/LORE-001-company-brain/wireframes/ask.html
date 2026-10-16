@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wireframe: ask</title>
+<style>
+  body { font-family: system-ui, sans-serif; background:#f4f4f4; color:#222; margin:0; padding:16px; }
+  h1 { font-size:18px; } h2 { font-size:14px; text-transform:uppercase; letter-spacing:.05em; color:#666; margin:28px 0 8px; }
+  .state { background:#fff; border:1px dashed #999; padding:12px; margin-bottom:12px; }
+  .box { border:1px solid #888; padding:8px; margin:6px 0; background:#fafafa; }
+  .row { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+  .split { display:flex; gap:12px; flex-wrap:wrap; } .split > .left { flex:45 1 300px; } .split > .right { flex:55 1 320px; }
+  .grow { flex:1; }
+  button { border:1px solid #555; background:#e8e8e8; padding:4px 10px; font:inherit; border-radius:3px; }
+  .primary { background:#444; color:#fff; }
+  .chip { border:1px solid #555; border-radius:12px; padding:2px 10px; background:#fff; font-size:13px; }
+  .badge { display:inline-block; border:1px solid #333; border-radius:3px; padding:0 5px; font-size:12px; background:#ddd; }
+  .note { font-size:12px; color:#777; font-style:italic; }
+  .muted { color:#777; }
+  .graph { height:180px; border:1px solid #888; background:repeating-linear-gradient(45deg,#f5f5f5,#f5f5f5 8px,#ececec 8px,#ececec 16px); display:flex; align-items:center; justify-content:center; color:#666; }
+  textarea { width:100%; font:inherit; box-sizing:border-box; }
+  mark { background:#ccc; }
+  .msg-user { text-align:right; } .msg-user span { display:inline-block; border:1px solid #888; padding:6px; background:#eee; }
+  .err { border:2px solid #333; }
+  ol.path { font-family: ui-monospace, monospace; font-size:12px; }
+</style>
+</head>
+<body>
+<h1>Wireframe — ask (chat + path graph + sources)</h1>
+<p class="note">Layout: chat on the left (~45%), Path + Sources on the right (~55%); stacks vertically below ~900px. Inside app-shell.</p>
+
+<h2>State: empty</h2>
+<div class="state">
+  <div class="split">
+    <div class="left">
+      <p data-wf="ask.tagline"><strong>Lore notices when what it knows goes stale, asks the right person, and tells whoever depends on it.</strong></p>
+      <p data-wf="ask.empty">Ask Lore anything about how Northwind Labs works.</p>
+      <div class="row" data-wf="ask.suggestions">
+        <span class="chip" data-wf="ask.suggestion">Who owns payments-api?</span>
+        <span class="chip" data-wf="ask.suggestion">Why did we pick VendorY?</span>
+        <span class="chip" data-wf="ask.suggestion">What depends on auth-v1?</span>
+        <span class="chip" data-wf="ask.suggestion">What's happening on Project Atlas?</span>
+        <span class="chip" data-wf="ask.suggestion">Who works on FalkorDB's query planner?</span>
+        <span class="chip" data-wf="ask.suggestion">Who owns billing-v9?</span>
+      </div>
+      <div class="box">
+        <label for="q">Ask a question</label>
+        <textarea id="q" rows="2" data-wf="ask.input" placeholder="e.g. Who should I talk to before changing auth-v1?"></textarea>
+        <div class="row"><span class="muted grow" data-wf="ask.char-count">0/500</span><button class="primary" data-wf="ask.submit" disabled>Ask</button></div>
+      </div>
+    </div>
+    <div class="right">
+      <div class="graph" data-wf="ask.graph-empty">The path Lore follows through the graph will appear here.</div>
+    </div>
+  </div>
+</div>
+
+<h2>State: loading (staged progress)</h2>
+<div class="state">
+  <div class="split">
+    <div class="left">
+      <div class="msg-user"><span>Who owns payments-api?</span></div>
+      <div class="box" role="status" aria-live="polite" data-wf="ask.progress">
+        <div>✓ Resolving entities…</div>
+        <div>⟳ Running get_owner…</div>
+        <div class="muted">○ Writing answer…</div>
+      </div>
+    </div>
+    <div class="right"><div class="graph" data-wf="ask.graph-loading">[ pulsing skeleton ]</div></div>
+  </div>
+</div>
+
+<h2>State: answered</h2>
+<div class="state">
+  <div class="split">
+    <div class="left">
+      <div class="msg-user"><span>Who owns payments-api?</span></div>
+      <div class="box" data-wf="ask.answer">
+        <p data-wf="ask.answer-text">payments-api is owned by the <u>Payments team</u>, led by Priya Shah <sup data-wf="ask.fact-marker">[1]</sup>. It depends on auth-v1 and VendorY's gateway <sup data-wf="ask.fact-marker">[2]</sup>.</p>
+        <div data-wf="ask.facts">
+          <div class="row" data-wf="ask.fact">[1] "Payments team owns payments-api" <span class="badge" data-wf="ask.fact-badge">✓ Trusted</span> <span class="muted">Confirmed by Priya Shah · 3 Oct</span></div>
+          <div class="row" data-wf="ask.fact">[2] "payments-api depends on auth-v1" <span class="badge" data-wf="ask.fact-badge">⚠ Suspect</span> <span class="muted">auth-v1 changed after this was confirmed: "auth-v1 deprecated" (TICKET-412, 12 Oct)</span></div>
+          <div class="row" data-wf="ask.fact">[3] "payments-api rate limit is 100 rps" <span class="badge" data-wf="ask.fact-badge">💬 Asking Dana Lee</span> <span class="muted">Asked 2 min ago · knower 1 of 3</span> <a data-wf="ask.view-as">View as Dana Lee</a></div>
+        </div>
+        <details data-wf="ask.tools-used"><summary>Tools used (3)</summary><code>resolve_entity("payments-api") → get_owner(sys:payments-api) → get_dependencies(sys:payments-api, depth=2)</code></details>
+        <span class="note">Answer as of 14:02 · <a data-wf="ask.ask-again">Ask again</a></span>
+      </div>
+      <div class="box">
+        <textarea rows="2" data-wf="ask.input"></textarea>
+        <div class="row"><span class="muted grow" data-wf="ask.char-count">0/500</span><button class="primary" data-wf="ask.submit">Ask</button></div>
+      </div>
+    </div>
+    <div class="right">
+      <strong>Path</strong>
+      <div class="row"><button data-wf="ask.graph-fit">Fit</button><button data-wf="ask.graph-reset">Reset zoom</button><button data-wf="ask.graph-expand">Expand</button></div>
+      <div class="graph" aria-hidden="true" data-wf="ask.graph">[ Cytoscape: (Priya) —LEADS→ (Payments team) —OWNS→ (payments-api) —DEPENDS_ON→ (auth-v1) ]</div>
+      <ol class="path" data-wf="ask.path-text" aria-label="Path as text">
+        <li>Priya Shah —LEADS→ Payments team</li>
+        <li>Payments team —OWNS→ payments-api</li>
+        <li>payments-api —DEPENDS_ON→ auth-v1</li>
+      </ol>
+      <strong>Sources</strong>
+      <div data-wf="ask.sources">
+        <div class="box" data-wf="ask.source">🎫 TICKET-301 "Move payments-api to Payments team" · Priya Shah · 3 Oct<br>"…ownership of <mark>payments-api moves to the Payments team</mark> effective…"</div>
+        <div class="box" data-wf="ask.source">📄 Doc "Payments architecture" · Marco Ruiz · 14 Aug<br>"…<mark>payments-api calls auth-v1</mark> for token checks…"</div>
+        <div class="box" data-wf="ask.source">💬 #payments chat · Dana Lee · 9 Oct<br>"…<mark>we're capped at 100 rps</mark> by VendorY…"</div>
+        <a data-wf="ask.sources-more">+2 more</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h2>State: not in the graph</h2>
+<div class="state">
+  <div class="msg-user"><span>Who owns billing-v9?</span></div>
+  <div class="box" data-wf="ask.not-in-graph">
+    <strong>Not in the graph</strong>
+    <p>Lore couldn't find billing-v9 in the company graph.</p>
+    <p data-wf="ask.suggested-knower">Closest person who may know: <strong>Priya Shah</strong> (owns billing-api, a similarly named system).</p>
+  </div>
+  <div class="box" data-wf="ask.not-in-graph-none"><strong>Not in the graph</strong><p>Lore couldn't find an answer in the company graph. No one in the graph is linked to this.</p></div>
+</div>
+
+<h2>State: partially resolved (did you mean)</h2>
+<div class="state">
+  <div class="box" data-wf="ask.did-you-mean">Couldn't match 'paymnts'. Did you mean:
+    <span class="chip" data-wf="ask.did-you-mean-option">payments-api</span>
+    <span class="chip" data-wf="ask.did-you-mean-option">Payments team</span>
+  </div>
+</div>
+
+<h2>State: LLM fallback</h2>
+<div class="state">
+  <div class="box" data-wf="ask.fallback-notice">ℹ Answer generated from graph results directly (language model unavailable).</div>
+  <div class="box">payments-api — owner: Payments team [1]. <span class="note">(path + sources render as in "answered")</span></div>
+</div>
+
+<h2>State: error</h2>
+<div class="state">
+  <div class="box err row" role="alert" data-wf="ask.error"><span class="grow">Something went wrong reaching the graph.</span><button data-wf="ask.error-retry">Retry</button></div>
+  <p class="note">The question stays in the input.</p>
+</div>
+
+<h2>State: input too long</h2>
+<div class="state">
+  <textarea rows="2" data-wf="ask.input" aria-describedby="len">…</textarea>
+  <div class="row"><span id="len" role="alert" data-wf="ask.input-error">Questions are limited to 500 characters (612/500).</span><button class="primary" data-wf="ask.submit" disabled>Ask</button></div>
+</div>
+
+<h2>State: extremes</h2>
+<div class="state">
+  <p class="note">Answer text max ~70ch. Sources: first 5 then "+N more". Path > ~25 nodes: auto-fit + "Show full path". Single node: centred, no edges. Long labels truncated with full name on hover.</p>
+</div>
+</body>
+</html>

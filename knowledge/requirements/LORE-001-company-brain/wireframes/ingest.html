@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wireframe: ingest</title>
+<style>
+  body { font-family: system-ui, sans-serif; background:#f4f4f4; color:#222; margin:0; padding:16px; }
+  h1 { font-size:18px; } h2 { font-size:14px; text-transform:uppercase; letter-spacing:.05em; color:#666; margin:28px 0 8px; }
+  .state { background:#fff; border:1px dashed #999; padding:12px; margin-bottom:12px; }
+  .box { border:1px solid #888; padding:8px; margin:6px 0; background:#fafafa; }
+  .row { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+  .cols { display:flex; gap:12px; flex-wrap:wrap; } .cols > div { flex:1 1 300px; }
+  .grow { flex:1; }
+  button { border:1px solid #555; background:#e8e8e8; padding:4px 10px; font:inherit; border-radius:3px; }
+  .primary { background:#444; color:#fff; }
+  .badge { display:inline-block; border:1px solid #333; border-radius:3px; padding:0 5px; font-size:12px; background:#ddd; }
+  .chip { border:1px solid #888; border-radius:10px; padding:0 6px; font-size:12px; }
+  .note { font-size:12px; color:#777; font-style:italic; }
+  .muted { color:#777; }
+  textarea, input { width:100%; font:inherit; box-sizing:border-box; }
+  mark { background:#ccc; }
+  .warn { border:2px solid #555; background:#eee; }
+</style>
+</head>
+<body>
+<h1>Wireframe — ingest (presets, free text, timeline replay, result)</h1>
+<p class="note">Inside app-shell. Left: input. Right: result of the last ingest. First ingest triggers "Preparing your copy of the company…" (app-shell).</p>
+
+<h2>State: empty form</h2>
+<div class="state">
+  <div class="cols">
+    <div>
+      <h3 data-wf="ingest.heading">Ingest</h3>
+      <div class="box">
+        <strong>Try a preset</strong> <span class="muted">(each one is known to change the graph)</span>
+        <div data-wf="ingest.presets">
+          <button data-wf="ingest.preset">Ticket: "Payments team handed payments-api to Platform"</button>
+          <button data-wf="ingest.preset">Chat: "VendorY raised our limit to 500 rps"</button>
+          <button data-wf="ingest.preset">Ticket: "auth-v1 is deprecated, migrate to auth-v2 by Nov 30"</button>
+        </div>
+      </div>
+      <div class="box">
+        <strong>Or paste your own</strong>
+        <div class="row" role="radiogroup" data-wf="ingest.kind">
+          <label><input type="radio" name="k" checked style="width:auto" data-wf="ingest.kind-ticket"> Ticket</label>
+          <label><input type="radio" name="k" style="width:auto" data-wf="ingest.kind-chat"> Chat message</label>
+          <label><input type="radio" name="k" style="width:auto" data-wf="ingest.kind-doc"> Doc</label>
+        </div>
+        <label for="t">Title (optional)</label><input id="t" data-wf="ingest.title">
+        <label for="x">Text</label>
+        <textarea id="x" rows="5" data-wf="ingest.text" placeholder="Paste a ticket or chat message as Priya Shah…"></textarea>
+        <div class="row"><span class="muted grow" data-wf="ingest.char-count">0/4000</span><button class="primary" data-wf="ingest.submit" disabled>Ingest</button></div>
+        <div class="box warn" data-wf="ingest.llm-notice">Demo only — don't paste real or confidential information. Text is sent to a third-party AI model (DeepSeek) to extract facts and is deleted with your sandbox after 2 hours of inactivity.</div>
+      </div>
+      <div class="box" data-wf="ingest.timeline">
+        <strong>Seeded timeline</strong>
+        <div>Company clock: <span data-wf="ingest.timeline-clock">Mon 13 Oct</span> · <span data-wf="ingest.timeline-remaining">6 events left</span></div>
+        <div class="muted" data-wf="ingest.timeline-preview">Next: 💬 #platform chat — "auth-v2 now enforces token TTL of 15 min"</div>
+        <button data-wf="ingest.timeline-next">Replay next event</button>
+      </div>
+    </div>
+    <div><div class="box muted" data-wf="ingest.result-empty">Results of your last ingest appear here: extracted facts, change events, and what turned suspect.</div></div>
+  </div>
+</div>
+
+<h2>State: processing (staged)</h2>
+<div class="state">
+  <div class="box" role="status" aria-live="polite" data-wf="ingest.progress">
+    <div>✓ Extracting facts…</div><div>⟳ Matching against existing facts…</div><div class="muted">○ Checking staleness…</div>
+  </div>
+</div>
+
+<h2>State: result</h2>
+<div class="state">
+  <div class="box" data-wf="ingest.result">
+    <div class="row"><strong class="grow">Ingested as Priya Shah · 🎫 Ticket</strong><span class="muted">company clock now Tue 14 Oct</span></div>
+    <p data-wf="ingest.result-text">"Heads up: <mark>Payments team handed payments-api to Platform</mark> as of today. Dana's team is on call."</p>
+
+    <strong>Extracted 1 fact</strong>
+    <div class="box" data-wf="ingest.result-fact">"Platform team owns payments-api" <span class="badge">◌ Unverified</span>
+      <span class="chip">payments-api</span> <span class="chip">ownership</span> <span class="muted" data-wf="ingest.result-confidence">confidence 92%</span>
+      <div class="note">Facts from pasted text start Unverified until someone confirms them.</div></div>
+
+    <strong>Change events: 1</strong>
+    <div class="box" data-wf="ingest.result-event">structural · owner_change · payments-api</div>
+
+    <strong>Made suspect: 2 facts</strong>
+    <div class="box" data-wf="ingest.result-flagged">"Payments team owns payments-api" <span class="badge">⚠ Suspect</span><br>"Priya Shah is on call for payments-api" <span class="badge">⚠ Suspect</span>
+      <div><a data-wf="ingest.result-open-freshness">See on Freshness board</a></div></div>
+
+    <strong>Asked</strong>
+    <div class="box" data-wf="ingest.result-asked">Dana Lee — leads Platform, the team this change names. <span class="muted">(You wrote the change, so Lore asks someone else to confirm.)</span> ·<a data-wf="ingest.result-view-as">View as Dana Lee</a></div>
+  </div>
+</div>
+
+<h2>State: nothing extracted</h2>
+<div class="state"><div class="box" data-wf="ingest.result-none">No facts or changes found in this text. It's stored as a source but didn't change the graph. <span class="muted">Try mentioning a system, team or person.</span></div></div>
+
+<h2>State: extraction failed</h2>
+<div class="state">
+  <div class="box row" role="alert" data-wf="ingest.error"><span class="grow">Extraction failed. Your text wasn't added.</span><button data-wf="ingest.error-retry">Retry</button></div>
+  <div class="box" role="alert" data-wf="ingest.error-llm-down">Extraction is temporarily unavailable. Presets and the seeded timeline still work.</div>
+</div>
+
+<h2>State: replay finished</h2>
+<div class="state"><div class="box" data-wf="ingest.timeline-done">All seeded events replayed. <button data-wf="ingest.timeline-reset">Reset sandbox</button> to start over.</div></div>
+
+<h2>State: validation errors</h2>
+<div class="state">
+  <div class="box" role="alert" data-wf="ingest.text-error">Text is limited to 4,000 characters (4,512/4,000).</div>
+  <div class="box" role="alert" data-wf="ingest.title-error">Title is limited to 200 characters.</div>
+  <div class="box" role="alert" data-wf="ingest.cap-error">Your sandbox has reached its limit of 200 ingested items. Reset to start over.</div>
+</div>
+</body>
+</html>

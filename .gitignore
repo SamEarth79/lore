@@ -1,0 +1,13 @@
+.env
+.env.*
+!.env.example
+.claude/settings.local.json
+.DS_Store
+__pycache__/
+*.pyc
+.venv/
+node_modules/
+web/dist/
+.pytest_cache/
+test-results/
+playwright-report/

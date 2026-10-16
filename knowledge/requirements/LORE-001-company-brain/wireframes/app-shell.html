@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wireframe: app-shell</title>
+<style>
+  body { font-family: system-ui, sans-serif; background:#f4f4f4; color:#222; margin:0; padding:16px; }
+  h1 { font-size:18px; } h2 { font-size:14px; text-transform:uppercase; letter-spacing:.05em; color:#666; margin:28px 0 8px; }
+  .state { background:#fff; border:1px dashed #999; padding:12px; margin-bottom:12px; }
+  .box { border:1px solid #888; padding:8px; margin:6px 0; background:#fafafa; }
+  .row { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+  .grow { flex:1; }
+  button, .btn { border:1px solid #555; background:#e8e8e8; padding:4px 10px; font:inherit; border-radius:3px; }
+  .primary { background:#444; color:#fff; }
+  .badge { display:inline-block; border:1px solid #555; border-radius:10px; padding:0 6px; font-size:12px; }
+  .note { font-size:12px; color:#777; font-style:italic; }
+  .muted { color:#777; }
+  .banner { border:2px solid #555; padding:8px; background:#eee; }
+  nav a { margin-right:12px; text-decoration:underline; color:#222; }
+  .dropdown { border:1px solid #555; background:#fff; width:320px; padding:4px; }
+  .dropdown div { padding:4px; border-bottom:1px solid #ddd; }
+  .tour { border:1px solid #555; background:#efefef; padding:8px; }
+  .tour ol { margin:4px 0; padding-left:20px; font-size:13px; }
+  .current { font-weight:bold; text-decoration:underline; }
+  .modal { border:2px solid #333; background:#fff; width:380px; padding:12px; }
+</style>
+</head>
+<body>
+<h1>Wireframe — app-shell (header, persona switcher, nav, guided tour, global banners)</h1>
+<p class="note">Low fidelity. Wraps every screen. Brand: wordmark "Lore". Tagline shown once above the fold on Ask.</p>
+
+<h2>State: populated (default landing)</h2>
+<div class="state">
+  <header class="box row" data-wf="app-shell.header">
+    <strong data-wf="app-shell.wordmark">Lore</strong>
+    <nav class="grow" data-wf="app-shell.nav">
+      <a data-wf="app-shell.nav-ask" class="current">Ask</a>
+      <a data-wf="app-shell.nav-inbox">Inbox <span class="badge" data-wf="app-shell.nav-inbox-count">2</span></a>
+      <a data-wf="app-shell.nav-freshness">Freshness</a>
+      <a data-wf="app-shell.nav-ingest">Ingest</a>
+    </nav>
+    <button data-wf="app-shell.persona-switcher">PS · Priya Shah · Payments team ▾ <span class="badge" data-wf="app-shell.persona-unread">2</span></button>
+    <button data-wf="app-shell.reset">Reset sandbox</button>
+    <button data-wf="app-shell.tour-toggle">Show me the loop</button>
+  </header>
+
+  <div class="tour" data-wf="app-shell.tour">
+    <div class="row"><strong class="grow">Show me the loop · step 2 of 6</strong>
+      <button data-wf="app-shell.tour-prev">Back</button>
+      <button class="primary" data-wf="app-shell.tour-next">Next</button>
+      <button data-wf="app-shell.tour-skip">Skip tour</button>
+    </div>
+    <ol data-wf="app-shell.tour-steps">
+      <li>Ask "Who owns payments-api?" — see a trusted answer with its path and sources.</li>
+      <li class="current">Ingest the preset "Payments team handed payments-api to Platform" — watch the fact turn Suspect.</li>
+      <li>Ask again — the answer now says "Asking Dana Lee".</li>
+      <li>View as Dana Lee → Inbox → Correct the owner.</li>
+      <li>See who was notified — open a dependent's inbox.</li>
+      <li>Ask again — the corrected fact, with its new source.</li>
+    </ol>
+    <span class="note">Step 1 done ✓. Progress remembered in this browser.</span>
+  </div>
+
+  <div class="box" style="height:80px">[ Active screen content — see ask / inbox / freshness / ingest wireframes ]</div>
+  <footer class="muted" data-wf="app-shell.footer">Synthetic company "Northwind Labs" + real data from FalkorDB/FalkorDB on GitHub · Built on FalkorDB</footer>
+</div>
+
+<h2>State: persona switcher open</h2>
+<div class="state">
+  <div class="dropdown" data-wf="app-shell.persona-list">
+    <div data-wf="app-shell.persona-option"><strong>Priya Shah</strong> · Payments team · owns payments-api <span class="badge">2</span> <span class="muted">(you)</span></div>
+    <div data-wf="app-shell.persona-option"><strong>Dana Lee</strong> · Platform team · lead <span class="badge">1</span> <span class="note">good starting point</span></div>
+    <div data-wf="app-shell.persona-option"><strong>Marco Ruiz</strong> · Checkout team · works on Project Atlas <span class="badge">0</span></div>
+    <div data-wf="app-shell.persona-option"><strong>Repo Steward (simulated)</strong> · stands in for real FalkorDB maintainers <span class="badge">0</span></div>
+  </div>
+  <p class="note">Selecting a persona re-fetches the current view and moves focus to the page heading (e.g. "Dana Lee's inbox").</p>
+</div>
+
+<h2>State: switching persona</h2>
+<div class="state">
+  <button data-wf="app-shell.persona-switcher" disabled>⟳ Switching to Dana Lee…</button>
+</div>
+
+<h2>State: reset confirmation</h2>
+<div class="state">
+  <div class="modal" role="dialog" data-wf="app-shell.reset-dialog">
+    <strong>Reset sandbox?</strong>
+    <p>All your answers, ingests and corrections will be discarded.</p>
+    <div class="row"><button class="primary" data-wf="app-shell.reset-confirm">Reset</button><button data-wf="app-shell.reset-cancel">Cancel</button></div>
+  </div>
+  <div class="box" data-wf="app-shell.toast">Toast: "Sandbox reset to the original company graph."</div>
+</div>
+
+<h2>State: sandbox expired</h2>
+<div class="state">
+  <div class="banner row" role="alert" data-wf="app-shell.banner-expired">
+    <span class="grow">Your sandbox expired after inactivity.</span>
+    <button class="primary" data-wf="app-shell.banner-expired-action">Start fresh</button>
+  </div>
+</div>
+
+<h2>State: demo at capacity</h2>
+<div class="state">
+  <div class="banner" role="status" data-wf="app-shell.banner-capacity">
+    The demo is at capacity right now — you can still ask questions, but changes are paused. Try again in a few minutes.
+  </div>
+</div>
+
+<h2>State: preparing sandbox (first write)</h2>
+<div class="state">
+  <div class="banner" role="status" data-wf="app-shell.banner-preparing">⟳ Preparing your copy of the company…</div>
+</div>
+
+<h2>State: backend unreachable</h2>
+<div class="state">
+  <div class="box" style="text-align:center;padding:40px" role="alert" data-wf="app-shell.error-unreachable">
+    <p>Lore's backend is unreachable right now.</p>
+    <button class="primary" data-wf="app-shell.error-unreachable-retry">Retry</button>
+  </div>
+</div>
+
+<h2>State: cold load</h2>
+<div class="state">
+  <div class="box" style="text-align:center;padding:30px" data-wf="app-shell.loading">Loading Lore…</div>
+</div>
+</body>
+</html>

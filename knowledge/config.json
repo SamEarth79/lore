@@ -1,0 +1,8 @@
+{
+  "prefix": "LORE",
+  "nextFeatureNumber": 2,
+  "nextFixNumber": 1,
+  "nextStoryNumber": {
+    "LORE-001-company-brain": 19
+  }
+}
